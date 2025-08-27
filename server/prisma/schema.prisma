@@ -13,6 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  name     String
+  role     Role   @default(LIBRARIAN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Member {
   id            String  @id @default(cuid())
   name          String
@@ -32,6 +43,11 @@ model Member {
 
   @@index([cnic])
   @@index([regNo])
+}
+
+enum Role {
+  ADMIN
+  LIBRARIAN
 }
 
 enum CardStatus {
