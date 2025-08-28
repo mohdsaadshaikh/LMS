@@ -4,13 +4,21 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "dev:docker": "npx prisma generate && npm run dev",
+    "prisma:generate": "pnpm dlx prisma generate",
+    "prisma:migrate": "dlx prisma migrate dev",
+    "prisma:studio": "pnpm dlx prisma studio",
+    "prisma:push": "pnpm dlx prisma db push"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
+    "@hono/zod-validator": "^0.7.2",
     "@prisma/client": "^6.14.0",
+    "bcryptjs": "^3.0.2",
     "hono": "^4.9.4",
-    "redis": "^5.8.2"
+    "redis": "^5.8.2",
+    "zod": "^4.1.4"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",

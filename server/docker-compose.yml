@@ -9,6 +9,8 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      - CHOKIDAR_USEPOLLING=true 
     volumes:
       - .:/app
       - /app/node_modules
