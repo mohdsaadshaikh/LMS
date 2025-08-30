@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { findUserByUsername, verifyPassword } from "../services/auth.service";
 import { loginSchema } from "../schema/auth.schema";
+import { createSession } from "../services/session.service";
 
 const auth = new Hono();
 
@@ -15,6 +16,8 @@ auth.post("/login", async (c) => {
 
   const ok = await verifyPassword(password, user.password);
   if (!ok) return c.json({ error: "Invalid password" }, 401);
+
+  await createSession(user.id, c);
   return c.json({ user });
 });
 
