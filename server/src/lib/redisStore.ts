@@ -8,6 +8,7 @@ export class RedisSessionStore {
 
   constructor() {
     this.client = new Redis(env.REDIS_URL);
+    this.client.on("error", (err) => console.error("Redis error:", err));
     this.ttl = env.SESSION_TTL_SECONDS;
   }
 

@@ -9,7 +9,7 @@ import { sign } from "../utils/crypto";
 const cookieName = env.SESSION_COOKIE_NAME;
 
 export const createSession = async (userId: string, c: Context) => {
-  const sessionId = randomBytes(16).toString("hex");
+  const sessionId = randomBytes(32).toString("hex");
   const now = Date.now();
 
   const data: SessionData = {
