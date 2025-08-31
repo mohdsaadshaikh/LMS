@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { findUserByUsername, verifyPassword } from "../services/auth.service";
 import { loginSchema } from "../schema/auth.schema";
+import { findUserByUsername, verifyPassword } from "../services/auth.service";
 import { createSession } from "../services/session.service";
 
 const auth = new Hono();

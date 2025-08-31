@@ -11,6 +11,16 @@ export const findUserByUsername = async (username: string) => {
   }
 };
 
+export const findUserById = async (id: string) => {
+  try {
+    return await prisma.user.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const verifyPassword = async (
   password: string,
   hashedPassword: string
