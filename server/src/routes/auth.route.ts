@@ -38,7 +38,7 @@ auth.post("/login", async (c) => {
     if (oldId) await sessionStore.del(oldId);
   }
 
-  await createSession(user.id, c);
+  await createSession(user.id, user.role, c);
   return c.json({ user });
 });
 

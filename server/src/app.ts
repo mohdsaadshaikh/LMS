@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import authRoutes from "./routes/auth.route";
-import { sessionMiddleware } from "./middlewares/session.middleware";
+import { requireRole, sessionMiddleware } from "./middlewares/auth.middleware";
+import { Role } from "@prisma/client";
 
 const app = new Hono();
 
@@ -8,7 +9,7 @@ app.use("*", sessionMiddleware);
 
 app.route("/auth", authRoutes);
 
-app.get("/", (c) => {
+app.get("/", requireRole(Role.LIBRARIAN), (c) => {
   return c.text("Hello bhai Hono!");
 });
 

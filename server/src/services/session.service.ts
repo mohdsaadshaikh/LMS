@@ -5,10 +5,11 @@ import { sessionStore } from "../lib/redisStore";
 import { setCookie } from "hono/cookie";
 import { env } from "../lib/env";
 import { sign } from "../utils/crypto";
+import type { Role } from "@prisma/client";
 
 const cookieName = env.SESSION_COOKIE_NAME;
 
-export const createSession = async (userId: string, c: Context) => {
+export const createSession = async (userId: string, role: Role, c: Context) => {
   const sessionId = randomBytes(32).toString("hex");
   const now = Date.now();
 
@@ -16,6 +17,7 @@ export const createSession = async (userId: string, c: Context) => {
     userId,
     createdAt: now,
     sessionId,
+    role,
     lastActive: now,
   };
 
