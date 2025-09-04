@@ -26,7 +26,7 @@ export const sessionMiddleware = async (c: Context, next: Next) => {
   await next();
 };
 
-export const requireRole = (roles: Role) => {
+export const requireRole = (...roles: Role[]) => {
   return async (c: Context, next: Next) => {
     const sess = (c as any).session as SessionData | undefined;
     if (!sess) return c.json({ error: "Not authenticated" }, 401);
