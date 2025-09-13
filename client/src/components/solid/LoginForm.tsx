@@ -1,8 +1,11 @@
 import { Field, PasswordInput } from "@ark-ui/solid";
 import { createForm, valiForm } from "@modular-forms/solid";
-import * as v from "valibot";
 import { EyeIcon, EyeOffIcon } from "lucide-solid";
-import { Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
+import * as v from "valibot";
+import api from "../../lib/axios";
+import AppToaster, { toaster } from "./AppToaster";
+import { AxiosError } from "axios";
 
 const loginSchema = v.object({
   username: v.pipe(v.string(), v.nonEmpty("Please enter your username.")),
@@ -20,8 +23,37 @@ const LoginForm = () => {
     validate: valiForm(loginSchema),
   });
 
-  const handleSubmit = (values: LoginFormData) => {
-    console.log("✅ Submitted values:", values);
+  const [user, setUser] = createSignal<any | null>(null);
+  const [errMsg, setErrMsg] = createSignal<string | null>(null);
+  const [loading, setLoading] = createSignal(false);
+
+  const handleSubmit = async (values: LoginFormData) => {
+    setLoading(true);
+    setErrMsg(null);
+    try {
+      const res = await api.post("/auth/login", values);
+      setUser(res.data.user);
+
+      toaster.create({
+        title: "Login successful",
+        description: `Welcome back, ${res.data.user.username}!`,
+        type: "success",
+      });
+    } catch (err) {
+      const axiosErr = err as AxiosError<{ error: string }>;
+      const message =
+        axiosErr.response?.data?.error ||
+        (err instanceof Error ? err.message : "Something went wrong");
+      setErrMsg(message);
+      console.log("Login Error:", err);
+      toaster.create({
+        title: "Login failed",
+        description: errMsg(),
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,9 +112,12 @@ const LoginForm = () => {
             )}
           </Login.Field>
           <button type="submit" class="btn w-full mt-3">
-            Login
+            <Show when={loading()} fallback={<p>Login</p>}>
+              Logging in...
+            </Show>
           </button>
         </Login.Form>
+        <AppToaster />
       </div>
     </div>
   );
