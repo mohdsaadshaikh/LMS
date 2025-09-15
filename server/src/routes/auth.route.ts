@@ -49,7 +49,7 @@ auth.get("/me", async (c) => {
   }
 
   const user = await findUserById(sess.userId);
-  return c.json(user);
+  return c.json({ user });
 });
 
 auth.get("/logout", async (c) => {

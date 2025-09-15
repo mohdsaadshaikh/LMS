@@ -1,11 +1,11 @@
 import { Field, PasswordInput } from "@ark-ui/solid";
 import { createForm, valiForm } from "@modular-forms/solid";
+import { AxiosError } from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-solid";
 import { createSignal, Show } from "solid-js";
 import * as v from "valibot";
-import api from "../../lib/axios";
+import { authService } from "../../lib/authService";
 import AppToaster, { toaster } from "./AppToaster";
-import { AxiosError } from "axios";
 
 const loginSchema = v.object({
   username: v.pipe(v.string(), v.nonEmpty("Please enter your username.")),
@@ -22,8 +22,6 @@ const LoginForm = () => {
   const [loginForm, Login] = createForm<LoginFormData>({
     validate: valiForm(loginSchema),
   });
-
-  const [user, setUser] = createSignal<any | null>(null);
   const [errMsg, setErrMsg] = createSignal<string | null>(null);
   const [loading, setLoading] = createSignal(false);
 
@@ -31,8 +29,7 @@ const LoginForm = () => {
     setLoading(true);
     setErrMsg(null);
     try {
-      const res = await api.post("/auth/login", values);
-      setUser(res.data.user);
+      const res = await authService.login(values);
 
       toaster.create({
         title: "Login successful",

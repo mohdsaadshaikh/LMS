@@ -12,6 +12,7 @@
     "@ark-ui/solid": "^5.23.0",
     "@astrojs/solid-js": "^5.1.1",
     "@modular-forms/solid": "^0.25.1",
+    "@solidjs/router": "^0.15.3",
     "@tailwindcss/vite": "^4.1.13",
     "astro": "^5.13.3",
     "axios": "^1.11.0",
