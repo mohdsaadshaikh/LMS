@@ -1,5 +1,6 @@
 import { onMount, Show, createEffect, type JSX } from "solid-js";
 import { authStore } from "../../lib/authStore";
+import Loader from "./Loader";
 
 export default function AuthGuard(props: { children: JSX.Element }) {
   onMount(() => {
@@ -11,12 +12,12 @@ export default function AuthGuard(props: { children: JSX.Element }) {
     const currentUser = authStore.user();
 
     if (!isLoading && !currentUser) {
-      window.location.href = "/login";
+      window.location.replace("/login");
     }
   });
 
   return (
-    <Show when={!authStore.loading()} fallback={<div>Loading...</div>}>
+    <Show when={!authStore.loading()} fallback={<Loader />}>
       <Show when={authStore.user()}>{props.children}</Show>
     </Show>
   );

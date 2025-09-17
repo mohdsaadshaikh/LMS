@@ -36,6 +36,7 @@ const LoginForm = () => {
         description: `Welcome back, ${res.data.user.username}!`,
         type: "success",
       });
+      window.location.replace("/");
     } catch (err) {
       const axiosErr = err as AxiosError<{ error: string }>;
       const message =
