@@ -43,6 +43,11 @@ export const verifyPassword = async (
   return await bcrypt.compareSync(password, hashedPassword);
 };
 
+export const hashPassword = async (password: string) => {
+  const salt = await bcrypt.genSaltSync(10);
+  return await bcrypt.hashSync(password, salt);
+};
+
 export const destroySession = async (c: Context) => {
   const signedSessionCookie = getCookie(c, cookieName);
   if (signedSessionCookie) {

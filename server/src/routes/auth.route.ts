@@ -1,9 +1,10 @@
 import { Hono } from "hono";
-import { loginSchema } from "../schema/auth.schema";
+import { changePasswordSchema, loginSchema } from "../schema/auth.schema";
 import {
   destroySession,
   findUserById,
   findUserByUsername,
+  hashPassword,
   verifyPassword,
 } from "../services/auth.service";
 import { createSession } from "../services/session.service";
@@ -11,6 +12,7 @@ import { getCookie } from "hono/cookie";
 import { env } from "../lib/env";
 import { unsign } from "../utils/crypto";
 import { sessionStore } from "../lib/redisStore";
+import prisma from "../config/prisma";
 
 const auth = new Hono();
 
@@ -55,6 +57,39 @@ auth.get("/me", async (c) => {
 auth.get("/logout", async (c) => {
   await destroySession(c);
   return c.json({ message: "Logged out successfully" });
+});
+
+auth.post("/change-password", async (c) => {
+  const user = (c as any).sessionUser;
+  if (!user) return c.json({ error: "Not authenticated" }, 401);
+
+  const body = await c.req.json().catch(() => null);
+  const parsed = changePasswordSchema.safeParse(body);
+  if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
+
+  const { oldPassword, newPassword } = parsed.data;
+
+  const isValidPassword = await verifyPassword(oldPassword, user.password);
+  if (!isValidPassword)
+    return c.json({ error: "Old password is incorrect" }, 400);
+
+  if (oldPassword === newPassword)
+    return c.json(
+      { error: "New password must be different from old password" },
+      400
+    );
+
+  const hashedPassword = await hashPassword(newPassword);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedPassword, isPasswordChanged: true },
+  });
+
+  await destroySession(c);
+  return c.json({
+    message: "Password changed successfully. Please login again.",
+  });
 });
 
 export default auth;

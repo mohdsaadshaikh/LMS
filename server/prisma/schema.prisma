@@ -14,11 +14,12 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
-  username String @unique
-  password String @default("test1234")
-  name     String
-  role     Role   @default(LIBRARIAN)
+  id                String  @id @default(cuid())
+  username          String  @unique
+  password          String  @default("test1234")
+  name              String
+  role              Role    @default(LIBRARIAN)
+  isPasswordChanged Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
