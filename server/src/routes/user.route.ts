@@ -57,21 +57,27 @@ user.patch("/:id", async (c) => {
   try {
     const user = await findUserById(id);
     if (!user) return c.json({ error: "User not found" }, 404);
+
     const body = await c.req.json().catch(() => null);
+
     const parsed = userSchema.partial().safeParse(body);
     if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
+
     const { username, name } = parsed.data;
     if (username) {
       const existingUser = await findUserByUsername(username);
       if (existingUser && existingUser.id !== id)
         return c.json({ error: "Username already exists" }, 400);
     }
+
     const updatedUser = await prisma.user.update({
       where: { id },
       data: { username, name },
     });
     return c.json(updatedUser);
-  } catch (error) {}
+  } catch (error) {
+    return c.json({ error: "Failed to update user" }, 500);
+  }
 });
 
 user.delete("/:id", async (c) => {
