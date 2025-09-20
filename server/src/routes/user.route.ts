@@ -36,7 +36,7 @@ user.post("/", async (c) => {
   try {
     const body = await c.req.json().catch(() => null);
     const parsed = userSchema.safeParse(body);
-    if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
+    if (!parsed.success) return c.json({ error: parsed.error.issues }, 400);
     const { username, name } = parsed.data;
     const user = await findUserByUsername(username);
     if (user) return c.json({ error: "Username already exists" }, 400);
@@ -61,7 +61,7 @@ user.patch("/:id", async (c) => {
     const body = await c.req.json().catch(() => null);
 
     const parsed = userSchema.partial().safeParse(body);
-    if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
+    if (!parsed.success) return c.json({ error: parsed.error.issues }, 400);
 
     const { username, name } = parsed.data;
     if (username) {

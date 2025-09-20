@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { requireRole } from "../middlewares/auth.middleware";
 import { createMemberSchema } from "../schema/member.schema";
 import prisma from "../config/prisma";
-import { getMemberById } from "../services/member.service";
+import { getMemberById, getMemberByCNIC } from "../services/member.service";
 getMemberById;
 
 const member = new Hono();
@@ -30,6 +30,50 @@ member.get("/:id", async (c) => {
     return c.json(member);
   } catch (error) {
     return c.json({ error: "Failed to fetch member" }, 500);
+  }
+});
+
+member.post("/", async (c) => {
+  try {
+    const body = await c.req.json().catch(() => null);
+    if (!body) return c.json({ error: "Invalid JSON body" }, 400);
+
+    const parsed = createMemberSchema.safeParse(body);
+    if (!parsed.success) return c.json({ error: parsed.error.issues }, 400);
+
+    const {
+      name,
+      fatherName,
+      cnic,
+      phone,
+      address,
+      qualification,
+      regNo,
+      cardIssuedAt,
+      cardExpiresAt,
+      cardStatus,
+    } = parsed.data;
+
+    const existingMember = await getMemberByCNIC(cnic);
+    if (existingMember) return c.json({ error: "Member already exist" }, 400);
+
+    await prisma.member.create({
+      data: {
+        name,
+        fatherName,
+        cnic,
+        phone,
+        address,
+        qualification,
+        regNo,
+        cardIssuedAt,
+        cardExpiresAt,
+        cardStatus,
+      },
+    });
+    return c.json({ message: "Member created successfully" }, 201);
+  } catch (error) {
+    return c.json({ error: "Failed to create member" }, 500);
   }
 });
 

@@ -22,7 +22,7 @@ auth.post("/login", async (c) => {
   try {
     const body = await c.req.json().catch(() => null);
     const parsed = loginSchema.safeParse(body);
-    if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
+    if (!parsed.success) return c.json({ error: parsed.error.issues }, 400);
 
     const { username, password } = parsed.data;
 
@@ -78,7 +78,7 @@ auth.post("/change-password", async (c) => {
 
     const body = await c.req.json().catch(() => null);
     const parsed = changePasswordSchema.safeParse(body);
-    if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
+    if (!parsed.success) return c.json({ error: parsed.error.issues }, 400);
 
     const { oldPassword, newPassword } = parsed.data;
 

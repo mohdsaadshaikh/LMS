@@ -1,3 +1,4 @@
+import { CardStatus } from "@prisma/client";
 import * as z from "zod";
 
 export const createMemberSchema = z.object({
@@ -9,9 +10,11 @@ export const createMemberSchema = z.object({
   qualification: z.string({ error: "qualification is required" }),
   regNo: z.string({ error: "regNo is required" }),
 
+  cardIssuedAt: z.date().default(() => new Date()),
   cardExpiresAt: z.date().default(() => {
     const now = new Date();
     now.setFullYear(now.getFullYear() + 2);
     return now;
   }),
+  cardStatus: z.enum(CardStatus).default(CardStatus.ACTIVE),
 });
