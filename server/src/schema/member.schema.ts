@@ -18,3 +18,5 @@ export const createMemberSchema = z.object({
   }),
   cardStatus: z.enum(CardStatus).default(CardStatus.ACTIVE),
 });
+
+export const updateMemberSchema = createMemberSchema.partial();
