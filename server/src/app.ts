@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
+import memberRoutes from "./routes/member.route";
 import { requireRole, sessionMiddleware } from "./middlewares/auth.middleware";
 import { Role } from "@prisma/client";
 import { cors } from "hono/cors";
@@ -18,6 +19,7 @@ app.use("*", sessionMiddleware);
 
 app.route("/api/v1/auth", authRoutes);
 app.route("/api/v1/users", userRoutes);
+app.route("/api/v1/members", memberRoutes);
 
 app.get("/", requireRole(Role.LIBRARIAN), (c) => {
   return c.text("Hello bhai Hono!");

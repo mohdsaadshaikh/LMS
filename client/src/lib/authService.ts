@@ -14,7 +14,7 @@ export const authService = {
     password: string;
   }): Promise<AxiosResponse<{ user: User }>> => api.post("/auth/login", values),
 
-  logout: (): Promise<AxiosResponse<void>> => api.post("/auth/logout"),
+  logout: (): Promise<AxiosResponse<void>> => api.get("/auth/logout"),
 
   me: (): Promise<AxiosResponse<{ user: User }>> => api.get("/auth/me"),
 };

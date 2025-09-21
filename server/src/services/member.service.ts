@@ -18,11 +18,11 @@ export const getMemberByRegNo = async (regNo: string) => {
   });
 };
 
-export const getMemberByCNICAndRegNo = async (cnic: string, regNo: string) => {
-  await prisma.member.findFirst({
-    where: {
-      cnic,
-      regNo,
-    },
-  });
+export const getMemberByCNICOrRegNo = async (cnic: string, regNo: string) => {
+  const memberByCNIC = await prisma.member.findUnique({ where: { cnic } });
+  const memberByRegNo = await prisma.member.findUnique({ where: { regNo } });
+  return {
+    memberByCNIC,
+    memberByRegNo,
+  };
 };

@@ -1,22 +1,25 @@
 import { Hono } from "hono";
+import prisma from "../config/prisma";
 import { requireRole } from "../middlewares/auth.middleware";
 import {
   createMemberSchema,
   updateMemberSchema,
 } from "../schema/member.schema";
-import prisma from "../config/prisma";
-import { getMemberById, getMemberByCNIC } from "../services/member.service";
+import {
+  getMemberByCNICOrRegNo,
+  getMemberById,
+} from "../services/member.service";
 getMemberById;
 
 const member = new Hono();
 
-member.use("*", requireRole("ADMIN"));
+member.use("*", requireRole("ADMIN", "LIBRARIAN"));
 
 member.get("/", async (c) => {
   try {
     const members = await prisma.member.findMany();
-    if (!members) c.json({ error: "No members found" }, 404);
-    return c.json(members);
+    if (members.length === 0) return c.json({ error: "No members found" }, 404);
+    return c.json({ length: members.length, members });
   } catch (error) {
     return c.json({ error: "Failed to fetch members" }, 500);
   }
@@ -57,8 +60,12 @@ member.post("/", async (c) => {
       cardStatus,
     } = parsed.data;
 
-    const existingMember = await getMemberByCNIC(cnic);
-    if (existingMember) return c.json({ error: "Member already exist" }, 400);
+    const { memberByCNIC, memberByRegNo } = await getMemberByCNICOrRegNo(
+      cnic,
+      regNo
+    );
+    if (memberByCNIC || memberByRegNo)
+      return c.json({ error: "Member already exists" }, 400);
 
     await prisma.member.create({
       data: {
@@ -76,6 +83,7 @@ member.post("/", async (c) => {
     });
     return c.json({ message: "Member created successfully" }, 201);
   } catch (error) {
+    console.error(error);
     return c.json({ error: "Failed to create member" }, 500);
   }
 });
