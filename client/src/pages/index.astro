@@ -1,15 +1,7 @@
 ---
-import AuthGuard from "../components/solid/AuthGuard";
-import Navbar from "../components/solid/Navbar";
-import Sidebar from "../components/solid/Sidebar";
-import Layout from "../layouts/Layout.astro";
+import AppLayout from "../layouts/AppLayout.astro";
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<AuthGuard client:only="solid">
-  <Layout>
-    <Navbar client:only="solid" />
-    <Sidebar client:only="solid" />
-  </Layout>
-</AuthGuard>
+<AppLayout />

@@ -56,7 +56,7 @@ const LoginForm = () => {
 
   return (
     <div class="flex min-h-screen items-center justify-center light:bg-gray-100">
-      <div class="w-full max-w-sm rounded-lg light:bg-white border px-6 py-8 ">
+      <div class="w-full max-w-sm light:bg-white border px-6 py-8 ">
         <div class="flex justify-between mb-6">
           <div>
             <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
@@ -76,7 +76,7 @@ const LoginForm = () => {
                 <Field.Label class="text-sm font-light">Username</Field.Label>
                 <Field.Input
                   {...props}
-                  class="input w-full"
+                  class="input w-full rounded-none"
                   type="text"
                   required
                   name="username"
@@ -93,7 +93,7 @@ const LoginForm = () => {
                 <PasswordInput.Label class="text-sm font-light">
                   Password
                 </PasswordInput.Label>
-                <PasswordInput.Control class="input w-full">
+                <PasswordInput.Control class="input w-full rounded-none">
                   <PasswordInput.Input {...props} />
                   <PasswordInput.VisibilityTrigger>
                     <PasswordInput.Indicator
@@ -109,7 +109,10 @@ const LoginForm = () => {
               </PasswordInput.Root>
             )}
           </Login.Field>
-          <button type="submit" class="btn w-full mt-3">
+          <button
+            type="submit"
+            class="w-full mt-3 btn rounded-none  border-black hover:text-white hover:bg-gray-800"
+          >
             <Show when={loading()} fallback={<p>Login</p>}>
               Logging in...
             </Show>

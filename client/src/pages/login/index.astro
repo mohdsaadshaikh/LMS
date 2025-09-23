@@ -1,12 +1,12 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 import LoginForm from "../../components/solid/LoginForm";
 import "../../styles/global.css";
 import LoginGuard from "../../components/solid/LoginGuard";
 ---
 
-<Layout>
+<BaseLayout>
   <LoginGuard client:only="solid">
     <LoginForm client:only="solid" />
   </LoginGuard>
-</Layout>
+</BaseLayout>

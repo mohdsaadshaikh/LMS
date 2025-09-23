@@ -1,5 +1,4 @@
 import { createSignal } from "solid-js";
-import Logo from "./Logo";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -11,8 +10,6 @@ export default function Navbar() {
   };
 
   return (
-    <nav class="border-b-[1.5px] px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[8vh] gap-4">
-      <Logo />
-    </nav>
+    <nav class="border-b-[1.5px] px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[8vh] gap-4"></nav>
   );
 }
