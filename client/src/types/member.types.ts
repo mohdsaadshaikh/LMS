@@ -1,5 +1,9 @@
 export interface MembersResponse {
-  length: number;
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  count: number;
   members: Member[];
 }
 

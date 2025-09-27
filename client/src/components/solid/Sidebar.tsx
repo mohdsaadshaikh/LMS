@@ -66,7 +66,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = createSignal(false);
 
   return (
-    <div class="flex sticky">
+    <div class="flex">
       <button
         class="fixed top-4 right-4 z-50 
          p-2 rounded-full 
@@ -78,7 +78,7 @@ export default function Sidebar() {
       >
         <MenuIcon size={22} class="text-gray-700" />
       </button>
-      <aside class="hidden md:flex flex-col bg-white w-64 border-r-[1.5px] min-h-screen p-4">
+      <aside class="hidden md:flex flex-col overflow-hidden bg-white w-64 max-h-screen sticky top-0 left-0 border-r-[1.5px] p-4">
         <div class="flex flex-col h-full ">
           <div class="mb-6 ml-3">
             <Logo />

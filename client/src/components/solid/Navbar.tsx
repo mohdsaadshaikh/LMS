@@ -10,6 +10,6 @@ export default function Navbar() {
   };
 
   return (
-    <nav class="border-b-[1.5px] px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[8vh] gap-4"></nav>
+    <nav class="border-b-[1.5px] bg-white px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[8vh] gap-4 sticky top-0 z-40"></nav>
   );
 }

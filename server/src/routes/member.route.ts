@@ -17,10 +17,32 @@ member.use("*", requireRole("ADMIN", "LIBRARIAN"));
 
 member.get("/", async (c) => {
   try {
-    const members = await prisma.member.findMany();
+    const page = parseInt(c.req.query("page") || "1", 10);
+    const limit = parseInt(c.req.query("limit") || "10", 10);
+
+    const skip = (page - 1) * limit;
+
+    const [total, members] = await Promise.all([
+      prisma.member.count(),
+      prisma.member.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+
     if (members.length === 0) return c.json({ error: "No members found" }, 404);
-    return c.json({ length: members.length, members });
+
+    return c.json({
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      count: members.length,
+      members,
+    });
   } catch (error) {
+    console.error(error);
     return c.json({ error: "Failed to fetch members" }, 500);
   }
 });
@@ -67,7 +89,7 @@ member.post("/", async (c) => {
     if (memberByCNIC || memberByRegNo)
       return c.json({ error: "Member already exists" }, 400);
 
-    await prisma.member.create({
+    await prisma.member.createMany({
       data: {
         name,
         fatherName,

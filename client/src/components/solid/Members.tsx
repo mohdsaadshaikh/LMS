@@ -1,14 +1,30 @@
-import { createResource } from "solid-js";
+import { createResource, createSignal } from "solid-js";
 import { memberService } from "../../lib/memberService";
 import MembersList from "./MembersList";
 
-const fetchMembers = async () => {
-  const res = await memberService.getMembers();
-  return res.data.members;
-};
-
 export const Members = () => {
-  const [members] = createResource(fetchMembers);
+  const [page, setPage] = createSignal(1);
+  const [limit, setLimit] = createSignal(10);
 
-  return <MembersList members={members} />;
+  const fetchMembers = async () => {
+    const res = await memberService.getMembers(page(), limit());
+    return res.data;
+  };
+
+  const [membersData, { refetch }] = createResource(fetchMembers);
+
+  return (
+    <>
+      <div class="w-full flex flex-col justify-center items-center ">
+        <MembersList
+          membersData={membersData}
+          page={page}
+          setPage={setPage}
+          limit={limit}
+          setLimit={setLimit}
+          refetch={refetch}
+        />
+      </div>
+    </>
+  );
 };

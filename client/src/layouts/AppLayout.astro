@@ -11,9 +11,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <Sidebar client:only="solid" />
       <div class="w-full">
         <Navbar client:only="solid" />
-        <div class="min-h-screen">
+        <main class="h-screen p-4 overflow-x-hidden overflow-y-auto">
           <slot />
-        </div>
+        </main>
       </div>
     </div>
   </BaseLayout>
