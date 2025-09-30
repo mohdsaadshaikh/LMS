@@ -78,7 +78,7 @@ export default function Sidebar() {
       >
         <MenuIcon size={22} class="text-gray-700" />
       </button>
-      <aside class="hidden md:flex flex-col overflow-hidden bg-white w-64 max-h-screen sticky top-0 left-0 border-r-[1.5px] p-4">
+      <aside class="hidden md:flex flex-col overflow-hidden bg-white w-64 max-h-screen sticky top-0 left-0 border-r-[1px] p-4">
         <div class="flex flex-col h-full ">
           <div class="mb-6 ml-3">
             <Logo />

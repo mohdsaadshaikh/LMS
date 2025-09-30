@@ -11,7 +11,7 @@ const AppToaster = () => {
   return (
     <Toaster toaster={toaster}>
       {(toast) => (
-        <Toast.Root class="flex items-center gap-3 bg-white border shadow rounded-lg p-3 w-80">
+        <Toast.Root class="flex items-center gap-3 bg-white border shadow p-3 w-80">
           <div class="flex-1">
             <Toast.Title class="font-semibold text-gray-900 text-sm">
               {toast().title}

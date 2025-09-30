@@ -111,7 +111,7 @@ const LoginForm = () => {
           </Login.Field>
           <button
             type="submit"
-            class="w-full mt-3 btn rounded-none  border-black hover:text-white hover:bg-gray-800"
+            class="w-full mt-3 btn rounded-none  border-black"
           >
             <Show when={loading()} fallback={<p>Login</p>}>
               Logging in...
