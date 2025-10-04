@@ -1,12 +1,11 @@
 import { Field } from "@ark-ui/solid";
-import { createForm, valiForm } from "@modular-forms/solid";
-import { EyeIcon, EyeOffIcon } from "lucide-solid";
+import { createForm, reset, valiForm } from "@modular-forms/solid";
+import type { AxiosError } from "axios";
 import { createSignal, Show } from "solid-js";
 import * as v from "valibot";
+import { memberService } from "../../lib/memberService";
 import { toaster } from "./AppToaster";
 import { Input } from "./Input";
-import { memberService } from "../../lib/memberService";
-import type { AxiosError } from "axios";
 
 const memberSchema = v.object({
   name: v.pipe(v.string(), v.nonEmpty("Please enter name")),
@@ -38,6 +37,7 @@ const AddMember = (props: { setOpen: (open: boolean) => void }) => {
         description: `Member created Successfully`,
         type: "success",
       });
+      reset(addMemberForm);
     } catch (err) {
       const axiosErr = err as AxiosError<{ error: string }>;
       const message =

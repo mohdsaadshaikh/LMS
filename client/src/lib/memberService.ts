@@ -1,12 +1,12 @@
 import type { AxiosResponse } from "axios";
 import api from "../lib/axios";
-import type { MembersResponse } from "../types/member.types";
+import type { Member, MembersResponse } from "../types/member.types";
 
 export const memberService = {
   getMembers: (page = 1, limit = 10): Promise<AxiosResponse<MembersResponse>> =>
     api.get(`/members?page=${page}&limit=${limit}`),
 
-  getMember: (id: string): Promise<AxiosResponse<any>> =>
+  getMember: (id: string): Promise<AxiosResponse<Member>> =>
     api.get(`/members/${id}`),
 
   addMember: (data: any): Promise<AxiosResponse<any>> =>

@@ -17,7 +17,14 @@ export default function AuthGuard(props: { children: JSX.Element }) {
   });
 
   return (
-    <Show when={!authStore.loading()} fallback={<Loader />}>
+    <Show
+      when={!authStore.loading()}
+      fallback={
+        <div class="h-screen flex justify-center items-center">
+          <Loader />
+        </div>
+      }
+    >
       <Show when={authStore.user()}>{props.children}</Show>
     </Show>
   );

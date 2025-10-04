@@ -1,9 +1,13 @@
-import { Pagination } from "@ark-ui/solid";
-import { EllipsisVertical } from "lucide-solid";
-import { For, Show, type Accessor } from "solid-js";
+import { Dialog, Menu, Pagination } from "@ark-ui/solid";
+import { EllipsisVertical, PencilIcon, TrashIcon, XIcon } from "lucide-solid";
+import { createSignal, For, Show, type Accessor } from "solid-js";
+import { Portal } from "solid-js/web";
 import type { MembersResponse } from "../../types/member.types";
-import Loader from "./Loader";
 import Avatar from "./Avatar";
+import Loader from "./Loader";
+import MemberInfo from "./MemberInfo";
+import CardStatusBadge from "./CardStatusBadge";
+import EditMember from "./EditMember";
 
 function MembersList(props: {
   membersData: Accessor<MembersResponse | undefined>;
@@ -13,10 +17,33 @@ function MembersList(props: {
   setLimit: (l: number) => void;
   refetch: () => void;
 }) {
+  const [infoOpen, setInfoOpen] = createSignal(false);
+  const [editOpen, setEditOpen] = createSignal(false);
+
+  const [selectedMemberForInfo, setSelectedMemberForInfo] =
+    createSignal<any>(null);
+  const [selectedMemberForEdit, setSelectedMemberForEdit] =
+    createSignal<any>(null);
+
   return (
     <Show when={props.membersData()} fallback={<Loader />}>
       {(res) => (
         <div class="bg-white border border-gray-200 w-full h-[60vh] md:w-[90vw] lg:w-[80vw] relative">
+          <Dialog.Root
+            open={infoOpen()}
+            onOpenChange={(e) => setInfoOpen(e.open)}
+          >
+            <Portal>
+              <Dialog.Backdrop class="fixed inset-0 bg-black/50 backdrop-blur-xs z-40" />
+              <Dialog.Positioner class="fixed inset-0 flex items-center justify-center z-50">
+                <Dialog.Content class="bg-white p-6 min-h-48 max-w-md w-full outline-none rounded">
+                  <Show when={selectedMemberForInfo()}>
+                    {(m) => <MemberInfo id={m().id} setOpen={setInfoOpen} />}
+                  </Show>
+                </Dialog.Content>
+              </Dialog.Positioner>
+            </Portal>
+          </Dialog.Root>
           <div class="overflow-x-auto flex-1 h-full">
             <table class="bg-white">
               <thead class="bg-gray-100 whitespace-nowrap">
@@ -29,13 +56,12 @@ function MembersList(props: {
                   <th class="p-4 text-left text-sm font-medium">
                     Qualification
                   </th>
-                  <th class="p-4 text-left text-sm font-medium">Reg No</th>
-                  <th class="p-4 text-left text-sm font-medium">
+                  {/* <th class="p-4 text-left text-sm font-medium">
                     Card Issued At
                   </th>
                   <th class="p-4 text-left text-sm font-medium">
                     Card Expires At
-                  </th>
+                  </th>*/}
                   <th class="p-4 text-left text-sm font-medium">Card Status</th>
                   <th class="p-4 text-left text-sm font-semibold text-slate-900">
                     Action
@@ -48,7 +74,13 @@ function MembersList(props: {
                   {(member) => (
                     <tr class="hover:bg-gray-50">
                       <td class="p-4 text-sm text-slate-900 font-medium">
-                        <div class="flex items-center cursor-pointer w-max">
+                        <div
+                          class="flex items-center cursor-pointer w-max"
+                          onClick={() => {
+                            setSelectedMemberForInfo(member);
+                            setInfoOpen(true);
+                          }}
+                        >
                           <Avatar name={member.name} />
                           <div class="ml-4">
                             <p class="font-medium">{member.name}</p>
@@ -75,37 +107,47 @@ function MembersList(props: {
                       <td class="p-4 text-sm text-slate-600 font-medium">
                         {member.qualification}
                       </td>
-                      <td class="p-4 text-sm text-slate-600 font-medium">
-                        {member.regNo}
-                      </td>
-                      <td class="p-4 text-sm text-slate-600 font-medium">
+                      {/* <td class="p-4 text-sm text-slate-600 font-medium">
                         {new Date(member.cardIssuedAt).toLocaleDateString()}
                       </td>
                       <td class="p-4 text-sm text-slate-600 font-medium">
                         {new Date(member.cardExpiresAt).toLocaleDateString()}
-                      </td>
+                      </td>*/}
                       <td class="p-4">
-                        <span
-                          class={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                            member.cardStatus === "ACTIVE"
-                              ? "bg-green-100 text-green-800"
-                              : member.cardStatus === "BLOCKED"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : member.cardStatus === "EXPIRED"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {member.cardStatus}
-                        </span>
+                        <CardStatusBadge status={member.cardStatus} />
                       </td>
                       <td class="p-4 text-sm text-slate-600 font-medium">
-                        <button
-                          class="cursor-pointer hover:bg-gray-100 p-2 rounded"
-                          title="More Options"
-                        >
-                          <EllipsisVertical size={20} class="fill-gray-500" />
-                        </button>
+                        <Menu.Root>
+                          <Menu.Trigger class="cursor-pointer hover:bg-gray-100 p-2 rounded outline-none">
+                            <EllipsisVertical size={20} class="fill-gray-500" />
+                          </Menu.Trigger>
+                          <Menu.Positioner>
+                            <Menu.Content class="bg-white outline-none border">
+                              <Menu.Item
+                                value="edit"
+                                class="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer flex gap-2 items-center"
+                                onSelect={() => {
+                                  setSelectedMemberForEdit(member);
+                                  setEditOpen(true);
+                                }}
+                              >
+                                <PencilIcon size={18} />
+                                <span> Edit</span>
+                              </Menu.Item>
+
+                              <Menu.Item
+                                value="delete"
+                                class="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer flex gap-2 items-center"
+                                onSelect={() => {
+                                  console.log("Delete clicked for", member.id);
+                                }}
+                              >
+                                <TrashIcon size={18} />
+                                <span> Delete</span>
+                              </Menu.Item>
+                            </Menu.Content>
+                          </Menu.Positioner>
+                        </Menu.Root>
                       </td>
                     </tr>
                   )}
@@ -113,6 +155,31 @@ function MembersList(props: {
               </tbody>
             </table>
           </div>
+          <Dialog.Root
+            open={editOpen()}
+            onOpenChange={(e) => setEditOpen(e.open)}
+          >
+            <Portal>
+              <Dialog.Backdrop class="fixed inset-0 bg-black/40 backdrop-blur-xs z-40" />
+              <Dialog.Positioner class="fixed inset-0 flex items-center justify-center z-50">
+                <Dialog.Content class="bg-white p-6 min-h-48 max-w-md w-full outline-none rounded">
+                  <Dialog.Title class="text-lg font-semibold mb-4">
+                    Edit Member
+                  </Dialog.Title>
+
+                  <Show when={selectedMemberForEdit()}>
+                    {(m) => (
+                      <EditMember
+                        id={m().id}
+                        setOpen={setEditOpen}
+                        refetch={props.refetch}
+                      />
+                    )}
+                  </Show>
+                </Dialog.Content>
+              </Dialog.Positioner>
+            </Portal>
+          </Dialog.Root>
 
           <div class="w-3/4 flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 bg-white  sticky bottom-0">
             <Pagination.Root

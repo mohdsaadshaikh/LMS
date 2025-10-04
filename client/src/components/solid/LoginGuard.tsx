@@ -16,7 +16,11 @@ export default function LoginGuard(props: { children: JSX.Element }) {
   return (
     <Show
       when={!authStore.loading() && !authStore.user()}
-      fallback={<Loader />}
+      fallback={
+        <div class="h-screen flex justify-center items-center">
+          <Loader />
+        </div>
+      }
     >
       {props.children}
     </Show>

@@ -8,6 +8,7 @@ export interface MembersResponse {
 }
 
 export interface Member {
+  id: string;
   name: string;
   fatherName: string;
   cnic: string;
@@ -16,10 +17,10 @@ export interface Member {
   qualification: string;
   regNo: string;
 
-  cardIssuedAt: string;
-  cardExpiresAt: string;
+  cardIssuedAt: Date;
+  cardExpiresAt: Date;
   cardStatus: string;
 
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
